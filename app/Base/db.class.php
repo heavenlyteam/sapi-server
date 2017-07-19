@@ -62,12 +62,12 @@ class Db
 
     public function all()
     {
-        return $this->dbResponse;
+        return (object)$this->dbResponse;
     }
 
     public function one()
     {
-        return $this->dbResponse[0];
+        return (object)$this->dbResponse[0];
     }
 
     private function buildQuery()

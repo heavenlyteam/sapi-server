@@ -3,6 +3,8 @@
 use app\App;
 use app\Base\models\Token;
 
+require_once '../Base/models/Token.php';
+
 class BaseUserController {
 
     public $app;

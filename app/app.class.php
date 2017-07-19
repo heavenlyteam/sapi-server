@@ -26,7 +26,6 @@ class App
         $this->request = new Request();
         $this->config = new \Config();
         $this->store = new \Db($this->config->mysqlParams());
-//        $this->dbObject = new mysqli('localhost', 'root', 'vfhbyjxrf123', 'sapi');
     }
 
     public function db()

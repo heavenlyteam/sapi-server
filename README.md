@@ -10,7 +10,7 @@ Simple API server
 Для начала работы с приложением необзодимо настроить подключение
 к базе данных в файле /app/config.php
 
-```
+```php
 private $params = [
         'hashSalt' => 'vkwejroiewurn8o2y34obi23n4ybiyu23r427834tyo2j8hrtb2o3784ho2873p4234',
         'mysql' => [

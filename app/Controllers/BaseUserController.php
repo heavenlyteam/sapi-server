@@ -6,8 +6,8 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ERROR);
 
 use app\App;
-use app\Base\models\Token;
-use app\Base\models\User;
+use app\models\Token;
+use app\models\User;
 
 
 /**
@@ -30,32 +30,36 @@ class BaseUserController {
     {
         $this->app = $app;
         $this->request = $app->request;
-        $this->beforeAction();
+        $this->beforeAction(function ($response) {
+            echo json_encode($response);
+            exit();
+        });
     }
 
-    public function beforeAction() {
+    public function beforeAction($callBack) {
 
         $this->headers();
         if($this->request->isPost() === false || !$this->request->post('token')) {
-            echo json_encode([
+            $callBack([
                 'status' => false,
                 'description' => 'auth error',
             ]);
-            exit();
         }
 
         try {
             $this->user = (new Token($this->app))->getUser($this->request->post('token'));
         } catch (Exception $ex) {
-            var_dump($ex);die;
+            $callBack([
+                'status' => false,
+                'err' => $ex->getTraceAsString(),
+            ]);
         }
 
         if(!$this->user) {
-            echo json_encode([
+            $callBack([
                 'status' => false,
                 'description' => 'auth error',
             ]);
-            exit();
         }
     }
 

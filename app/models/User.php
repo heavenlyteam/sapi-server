@@ -1,6 +1,6 @@
 <?php
 
-namespace app\Base\models;
+namespace app\models;
 
 use app\App;
 
@@ -13,7 +13,7 @@ use app\App;
  * @property string $name
  */
 
-class User extends \baseModel
+class User extends BaseModel
 {
     public $baseTable = 'user';
 

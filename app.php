@@ -42,4 +42,17 @@ if($controller === null || $action === null) {
 }
 
 $currentControllerObject = new $controller($app);
-$currentControllerObject->$action();
+
+try {
+    $response = $currentControllerObject->$action();
+    if($response) {
+        echo json_encode($response);
+    }else {
+        echo $response;
+    }
+} catch (Exception $ex) {
+    echo json_encode([
+        'status' => false,
+        'err' => $ex->getTraceAsString(),
+    ]);
+}

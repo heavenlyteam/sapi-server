@@ -1,10 +1,10 @@
 <?php
 
-namespace app\Base\models;
+namespace app\models;
 
 use app\App;
 
-class Token extends \baseModel
+class Token extends BaseModel
 {
 
     public $baseTable = 'token';

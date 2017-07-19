@@ -1,11 +1,13 @@
 <?php
 
+namespace app\models;
+
 use app\App;
 
 /**
  * Class baseModel
  */
-class baseModel {
+class BaseModel {
 
     public $app;
     public $baseTable;
@@ -35,10 +37,10 @@ class baseModel {
     }
 
     /**
-     * @param stdClass $object
+     * @param $object
      * @return bool
      */
-    public function load(stdClass $object) {
+    public function load($object) {
         if(!$object) return false;
         foreach ($object as $key => $value) {
             $this->$key = $value;

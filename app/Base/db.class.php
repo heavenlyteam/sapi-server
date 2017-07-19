@@ -101,6 +101,11 @@ class Db
         return $qs;
     }
 
+    public function delete(string $table) {
+        $this->action = 'DELETE ' . 'FROM `' . $table . '`';
+        return $this;
+    }
+
     public function getQuery()
     {
         return $this->buildQuery();

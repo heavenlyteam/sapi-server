@@ -9,6 +9,7 @@ class baseModel {
 
     public $app;
     public $baseTable;
+    public $id;
 
     /**
      * baseModel constructor.
@@ -39,6 +40,8 @@ class baseModel {
 
     public function remove() {
         // Todo:: add DELETE statement in db.class
+        $this->app->store->delete($this->baseTable)->where('id', '=', $this->id);
+        return $this;
     }
 
 }

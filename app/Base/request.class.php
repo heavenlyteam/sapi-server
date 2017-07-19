@@ -42,20 +42,9 @@ class Request {
 
         $request['post'] = (object)$postArray;
         $request['get'] = (object) $getArray;
-        $request['type'] = 'get';
-
-        if(count($postArray) === 0) {
-            $request['isPost'] = false;
-        }else {
-            $request['isPost'] = true;
-            $request['type'] = 'post';
-        }
-
-        if(count($getArray) === 0) {
-            $request['isGet'] = false;
-        }else {
-            $request['isGet'] = true;
-        }
+        $request['type'] = strtolower($_SERVER['REQUEST_METHOD']);
+        $request['isPost'] = ($request['type'] === 'post');
+        $request['isGet'] = ($request['type'] === 'get');
 
         $this->params = (object) $request;
     }

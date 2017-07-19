@@ -12,6 +12,7 @@ class Db
     private $whereConditions = [];
     private $query = null;
     private $dbResponse = null;
+    private $actionName = null;
 
     public function __construct(array $dbConfig)
     {
@@ -21,6 +22,7 @@ class Db
     public function select(array $values)
     {
         $this->action = 'SELECT';
+        $this->actionName = 'select';
         foreach ($values as $value) {
             $this->valuesToSelect[] = $value;
         }
@@ -28,6 +30,7 @@ class Db
     }
 
     public function insert(string $to, array $values) {
+        $this->actionName = 'insert';
         $this->action = 'INSERT' . ' INTO `' . $to . '` (';
         $iteratorCounter = 0;
         foreach ($values as $value => $key) {
@@ -39,6 +42,19 @@ class Db
                 $this->action .= ', ';
             }
         }
+
+        $this->action .= 'VALUES (';
+        $iteratorCounter = 0;
+        foreach ($values as $value => $key) {
+            $iteratorCounter++;
+            $this->action .= ' "' .$key . '"';
+            if($iteratorCounter === count($values)) {
+                $this->action .= ' ) ';
+            }else {
+                $this->action .= ', ';
+            }
+        }
+
         return $this;
     }
 
@@ -50,29 +66,50 @@ class Db
 
     public function where(string $column, string $action, string $value)
     {
-        $this->whereConditions[] = strtolower(' `' . $column . '` ' . $action . ' ' . $value);
+        $this->whereConditions[] = strtolower(' `' . $column . '` ' . $action . ' "' . $value . '"');
         return $this;
     }
 
     public function exec()
     {
         $this->dbResponse = $this->dbObject->query($this->buildQuery());
+        $this->clear();
         return $this;
+    }
+
+    public function clear() {
+        $this->action = null;
+        $this->valuesToSelect = [];
+        $this->valuesToInsert = [];
+        $this->query = null;
+        $this->actionName = null;
+        $this->whereConditions = [];
+        $this->fromTable = null;
     }
 
     public function all()
     {
-        return (object)$this->dbResponse;
+        return (object)mysqli_fetch_all($this->dbResponse, MYSQLI_ASSOC);
     }
 
     public function one()
     {
-        return (object)$this->dbResponse[0];
+        $data = mysqli_fetch_all($this->dbResponse, MYSQLI_ASSOC);
+        if(count($data) > 0) {
+            return (object)$data[0];
+        }else {
+            return (object)[];
+        }
     }
 
     private function buildQuery()
     {
         $qs = $this->action;
+
+        if($this->actionName === 'insert') {
+            $this->query = $qs;
+            return $qs;
+        }
         $iterator = 0;
         foreach ($this->valuesToSelect as $column) {
             $iterator++;
@@ -84,7 +121,7 @@ class Db
                 $qs .= 'FROM ';
             }
         }
-        $qs .= strtoupper('`' . $this->fromTable . '`');
+        $qs .= strtolower('`' . $this->fromTable . '`');
 
         $iterator = 0;
         foreach ($this->whereConditions as $condition) {
@@ -102,6 +139,7 @@ class Db
     }
 
     public function delete(string $table) {
+        $this->actionName = 'delete';
         $this->action = 'DELETE ' . 'FROM `' . $table . '`';
         return $this;
     }

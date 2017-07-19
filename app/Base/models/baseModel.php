@@ -34,19 +34,37 @@ class baseModel {
         return $this;
     }
 
-    public function load(object $object) {
-        // override in models
+    /**
+     * @param stdClass $object
+     * @return bool
+     */
+    public function load(stdClass $object) {
+        if(!$object) return false;
+        foreach ($object as $key => $value) {
+            $this->$key = $value;
+        }
     }
 
+    /**
+     * @param $values
+     * @return $this
+     */
     public function create($values) {
         $this->load($this->app->store->insert($this->baseTable, $values)->exec()->one());
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function remove() {
         // TODO:: add DELETE statement in db.class
         $this->app->store->delete($this->baseTable)->where('id', '=', $this->id);
         return $this;
+    }
+
+    public function update(array $values) {
+
     }
 
 }

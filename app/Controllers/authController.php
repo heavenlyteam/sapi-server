@@ -26,16 +26,21 @@ class authController extends BaseGuestController {
             ]);
             return false;
         }
-
+        $tokenHash = md5($this->app->config->hashSalt() . time());
         $accessToken = $this->app->store->insert('token', [
             'user_id' => $User->id,
-            'token' => md5($this->app->config->hashSalt() . time())
-        ])->exec()->one();
+            'token' => $tokenHash
+        ])->exec()->all();
 
         if($accessToken) {
+
+
+            $accessTokenRecord = $this->app->store->select(['token'])->from('token')
+                ->where('token', '=', $tokenHash)->exec()->one();
+
             echo json_encode([
                 'status' => true,
-                'token' => $accessToken->token,
+                'token' => $accessTokenRecord->token,
             ]);
             return false;
         }else {
@@ -50,6 +55,7 @@ class authController extends BaseGuestController {
         if(!$this->request->isPost()) {
             echo json_encode([
                 'status' => false,
+                'desc' => 'request not post'
             ]);
             return false;
         }
@@ -64,15 +70,22 @@ class authController extends BaseGuestController {
 
         $passwordHash = md5($this->app->config->hashSalt() . $this->request->post('password'));
 
-        $User = $this->app->store->select(['id', 'login'])->from('user')
+        $User = $this->app->store->select(['id', 'login', 'password', 'name'])->from('user')
             ->where('login', '=', $this->request->post('login'))
             ->where('password', '=', $passwordHash)->exec()->one();
 
+        if(empty((array)$User)) {
+            $User = $this->app->store->insert('user', [
+                'login' => $this->request->post('login'),
+                'password' => md5($this->app->config->hashSalt() . $this->request->post('password')),
+            ])->exec()->one();
+        }
         if(!$User) {
             $this->actionLogin();
             return false;
         }else {
             echo json_encode([
+                'desc' => 'user not created',
                 'status' => false,
             ]);
             return false;

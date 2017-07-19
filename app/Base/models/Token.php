@@ -19,9 +19,9 @@ class Token extends \baseModel
     }
 
     public function getUser(string $token) {
-        $tokenRecord = $this->find(['token', '=', $token]);
-        if($tokenRecord) {
-            return (new User($this->app))->find(['id', '=', $tokenRecord->token]);
+        $this->find(['token', '=', $token]);
+        if($this->user_id) {
+            return (new User($this->app))->find(['id', '=', $this->user_id]);
         }else {
             return false;
         }

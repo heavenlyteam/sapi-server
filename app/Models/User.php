@@ -1,12 +1,13 @@
 <?php
 
-namespace app\models;
+namespace app\Models;
 
 use app\App;
+use app\Base\BaseModel;
 
 /**
  * Class User
- * @package app\Base\models
+ * @package app\Base\Models
  * @property integer $id
  * @property string $login
  * @property string $password

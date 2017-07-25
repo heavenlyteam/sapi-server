@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models;
+namespace app\Base;
 
 use app\App;
 
@@ -19,7 +19,6 @@ class BaseModel {
      */
     public function __construct($app)
     {
-        //TODO: rewrite init
         $this->app = $app;
     }
 
@@ -29,9 +28,20 @@ class BaseModel {
 
     /**
      * @param array $expression
+     * @return array
+     */
+    public function findAll(array $expression) {
+        if(count($expression) === 0) {
+            return (array)$this->app->store->select(['*'])->from($this->baseTable)->exec()->all();
+        }
+        return (array)$this->app->store->select(['*'])->from($this->baseTable)->where($expression[0], $expression[1], $expression[2])->exec()->all();
+    }
+
+    /**
+     * @param array $expression
      * @return $this
      */
-    public function find(array $expression) {
+    public function findOne(array $expression) {
         $this->load($this->app->store->select(['*'])->from($this->baseTable)->where($expression[0], $expression[1], $expression[2])->exec()->one());
         return $this;
     }

@@ -1,8 +1,9 @@
 <?php
 
-namespace app\models;
+namespace app\Models;
 
 use app\App;
+use app\Base\BaseModel;
 
 class Token extends BaseModel
 {
@@ -19,9 +20,9 @@ class Token extends BaseModel
     }
 
     public function getUser(string $token) {
-        $this->find(['token', '=', $token]);
+        $this->findOne(['token', '=', $token]);
         if($this->user_id) {
-            return (new User($this->app))->find(['id', '=', $this->user_id]);
+            return (new User($this->app))->findOne(['id', '=', $this->user_id]);
         }else {
             return false;
         }

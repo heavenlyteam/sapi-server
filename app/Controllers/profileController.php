@@ -3,12 +3,16 @@
 namespace app\Controllers;
 
 
-class profileController extends \BaseUserController {
+use BaseUserController;
+
+class profileController extends BaseUserController {
 
     public function actionIndex() {
+
         return [
             'status' => 'hui',
-            'login' => $this->user->login
+            'login' => $this->user->login,
+            'id' => $this->user->id,
         ];
     }
 

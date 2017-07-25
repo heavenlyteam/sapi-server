@@ -4,7 +4,7 @@ use app\App;
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
-error_reporting(E_ERROR);
+error_reporting(E_ALL);
 
 /**
  * Пример API сервера
@@ -14,7 +14,7 @@ error_reporting(E_ERROR);
  * Подключени конфигурационного файла проекта
  */
 require_once './app/config.php';
-require_once './app/Base/baseControllerLoader.php';
+require_once './app/Common/autoloader.php';
 require_once './app/app.class.php';
 $app = new App();
 global $app;

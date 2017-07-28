@@ -14,7 +14,12 @@ class Config {
 
     public function __construct()
     {
-        // Config class constructor
+        $this->params['hashSalt'] = getenv('HASH_SALT');
+
+        $this->params['mysql']['host'] = getenv('DB_HOST');
+        $this->params['mysql']['user'] = getenv('DB_USER');
+        $this->params['mysql']['password'] = getenv('DB_PASSWORD');
+        $this->params['mysql']['dbname'] = getenv('DB_NAME');
     }
 
     public function hashSalt() {

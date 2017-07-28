@@ -55,6 +55,7 @@ class BaseModel {
         foreach ($object as $key => $value) {
             $this->$key = $value;
         }
+        return true;
     }
 
     /**
@@ -70,7 +71,6 @@ class BaseModel {
      * @return $this
      */
     public function remove() {
-        // TODO:: add DELETE statement in db.class
         $this->app->store->delete($this->baseTable)->where('id', '=', $this->id);
         return $this;
     }

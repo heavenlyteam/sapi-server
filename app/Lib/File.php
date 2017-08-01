@@ -9,6 +9,7 @@ class File
     private $file;
     public $tmpPath;
     public $size;
+    public $savedName;
     public $supportedFileTypes = ['image'];
 
     /**
@@ -55,6 +56,7 @@ class File
         try {
             if (move_uploaded_file($this->file['tmp_name'], $destination . $name)) {
                 $this->path = $destination . $name;
+                $this->savedName = $name;
                 return true;
             } else {
                 return false;

@@ -2,17 +2,21 @@
 
 use app\App;
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
-/**
- * Пример API сервера
- */
+require_once './app/Common/DotEnvLoader.php';
 
-/**
- * Подключени конфигурационного файла проекта
- */
+new \app\Common\DotEnvLoader();
+
+if(getenv('DEBUG_MODE') === "PROD") {
+    ini_set('display_errors', 0);
+    ini_set('display_startup_errors', 0);
+    error_reporting(E_ERROR);
+}else {
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+}
+
 require_once './app/config.php';
 require_once './app/Common/autoloader.php';
 require_once './app/app.class.php';

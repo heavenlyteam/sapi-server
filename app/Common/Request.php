@@ -29,7 +29,12 @@ class Request {
         }
     }
 
+    public function files() {
+
+    }
+
     private function requestProcessing() {
+
         $postArray = [];
         $getArray = [];
         $request = [];

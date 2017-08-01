@@ -2,7 +2,9 @@
 
 namespace app\Base;
 
-class BaseComponent {
+class BaseComponent implements \BaseComponentInterface {
+
+    private $name;
 
     public function __construct()
     {
@@ -12,18 +14,13 @@ class BaseComponent {
         return $this->run();
     }
 
-    /**
-     * Function run before main component start
-     */
-    public function init() {
-        return true;
+    public function init($params = null)
+    {
+        // TODO: Implement init() method.
     }
 
-    /**
-     * Main component hook
-     */
-    public function run() {
-        return true;
+    public function run()
+    {
+        // TODO: Implement run() method.
     }
-
 }

@@ -1,0 +1,58 @@
+<?php
+
+$actions = [
+    'hello' => function() {
+        die("Hello from SAPI server <3 \n");
+    },
+    'dbcheck' => function() {
+        echo "Database connection tools loaded \n";
+        echo "Trying to connect... \n";
+        sleep(1);
+        try {
+            $connection = new mysqli(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_PASSWORD'), getenv('DB_PASSWORD'));
+            if($connection->errno) {
+                echo "Connection success \n";
+                $connection->close();
+            }else {
+                echo "Can't connect to database \n";
+                echo $connection->error;
+            }
+        } catch(Exception $ex) {
+            echo "Cant't connect to database \n";
+            echo $ex->getMessage();
+        }
+    },
+    'init' => function($env) {
+        echo "Framework init \n";
+
+        copy('./env.example', '.env');
+        $randomHash = uniqid();
+        if(file_exists('.env')) {
+            file_put_contents('.env', str_replace('HASH_SALT = "SOME HASH SALT"', 'HASH_SALT = "'.$randomHash.'"', file_get_contents('.env')));
+        }
+
+        if($env === 'prod') {
+            if(file_exists('.env')) {
+                file_put_contents('.env', str_replace('DEBUG_MODE = "OFF"', 'DEBUG_MODE = "PROD"', file_get_contents('.env')));
+            }
+        }else {
+            if(file_exists('.env')) {
+                file_put_contents('.env', str_replace('DEBUG_MODE = "OFF"', 'DEBUG_MODE = "DEV"', file_get_contents('.env')));
+            }
+        }
+        echo "Current env: ". $env . "\n";
+        echo "Success.\n";
+    },
+    'serve' => function($port) {
+        echo "SAPI server started on localhost:".$port."\n";
+        echo exec('php -S localhost:' . $port);
+    }
+];
+
+if(count($argv) === 1) {
+    $actions[$argv[1]]();
+}else if (count($argv) === 3) {
+    $actions[$argv[1]]($argv[2]);
+}else {
+    echo "error";
+}

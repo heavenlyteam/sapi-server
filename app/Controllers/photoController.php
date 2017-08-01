@@ -36,7 +36,7 @@ class photoController extends BaseGuestController
         $newBlurFileDest = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR . $blurFileName;
 
         $blurTimeStart = time();
-        $blurLog = BlurComponent::blur($file->path, $newBlurFileDest, 500);
+        $blurLog = BlurComponent::blur($file->path, $newBlurFileDest, $this->app->request->post('blur'));
         $blurTimEnd = time();
         return [
             'status' => true,

@@ -28,7 +28,7 @@ class BlurComponent extends BaseComponent
      */
     public static function blur($imageFile, $newName, $blurPower)
     {
-        $imageBlurFile = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Components' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . self::$name . DIRECTORY_SEPARATOR . 'imageBlur';
+        $imageBlurFile = '.' . $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Components' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . self::$name . DIRECTORY_SEPARATOR . 'imageBlur';
         $result = exec($imageBlurFile . ' ' . $imageFile . ' ' . $newName . ' ' . $blurPower);
         if((bool)$result) {
             return true;

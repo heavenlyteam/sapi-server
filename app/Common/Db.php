@@ -2,6 +2,8 @@
 
 namespace app\Base;
 
+use mysqli;
+
 class Db
 {
 
@@ -18,7 +20,7 @@ class Db
 
     public function __construct(array $dbConfig)
     {
-        $this->dbObject = new \mysqli($dbConfig['host'], $dbConfig['user'], $dbConfig['password'], $dbConfig['dbname']);
+        $this->dbObject = new mysqli($dbConfig['host'], $dbConfig['user'], $dbConfig['password'], $dbConfig['dbname']);
     }
 
     public function select(array $values)

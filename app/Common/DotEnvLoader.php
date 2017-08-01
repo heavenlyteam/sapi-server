@@ -35,14 +35,10 @@ final class DotEnvLoader
         $value = $this->resolveNestedVariables($value);
         return array($name, $value);
     }
+
     /**
-     * Process the runtime filters.
-     *
-     * Called from the `VariableFactory`, passed as a callback in `$this->loadFromFile()`.
-     *
-     * @param string $name
-     * @param string $value
-     *
+     * @param $name
+     * @param $value
      * @return array
      */
     public function processFilters($name, $value)
@@ -52,27 +48,22 @@ final class DotEnvLoader
         list($name, $value) = $this->sanitiseVariableValue($name, $value);
         return array($name, $value);
     }
+
     /**
-     * Read lines from the file, auto detecting line endings.
-     *
-     * @param string $filePath
-     *
-     * @return array
+     * @param $filePath
+     * @return array|bool
      */
     protected function readLinesFromFile($filePath)
     {
-        // Read file into an array of lines with auto-detected line endings
         $autodetect = ini_get('auto_detect_line_endings');
         ini_set('auto_detect_line_endings', '1');
         $lines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         ini_set('auto_detect_line_endings', $autodetect);
         return $lines;
     }
+
     /**
-     * Determine if the line in the file is a comment, e.g. begins with a #.
-     *
-     * @param string $line
-     *
+     * @param $line
      * @return bool
      */
     protected function isComment($line)
@@ -80,26 +71,20 @@ final class DotEnvLoader
         $line = ltrim($line);
         return isset($line[0]) && $line[0] === '#';
     }
+
+
     /**
-     * Determine if the given line looks like it's setting a variable.
-     *
-     * @param string $line
-     *
+     * @param $line
      * @return bool
      */
     protected function looksLikeSetter($line)
     {
         return strpos($line, '=') !== false;
     }
+
     /**
-     * Split the compound string into parts.
-     *
-     * If the `$name` contains an `=` sign, then we split it into 2 parts, a `name` & `value`
-     * disregarding the `$value` passed in.
-     *
-     * @param string $name
-     * @param string $value
-     *
+     * @param $name
+     * @param $value
      * @return array
      */
     protected function splitCompoundStringIntoParts($name, $value)
@@ -109,15 +94,13 @@ final class DotEnvLoader
         }
         return array($name, $value);
     }
+
+
     /**
-     * Strips quotes from the environment variable value.
-     *
-     * @param string $name
-     * @param string $value
-     *
-     * @throws \Dotenv\Exception\InvalidFileException
-     *
+     * @param $name
+     * @param $value
      * @return array
+     * @throws \Exception
      */
     protected function sanitiseVariableValue($name, $value)
     {
@@ -125,7 +108,7 @@ final class DotEnvLoader
         if (!$value) {
             return array($name, $value);
         }
-        if ($this->beginsWithAQuote($value)) { // value starts with a quote
+        if ($this->beginsWithAQuote($value)) {
             $quote = $value[0];
             $regexPattern = sprintf(
                 '/^
@@ -150,19 +133,14 @@ final class DotEnvLoader
             $value = trim($parts[0]);
             // Unquoted values cannot contain whitespace
             if (preg_match('/\s+/', $value) > 0) {
-                throw new InvalidFileException('Dotenv values containing spaces must be surrounded by quotes.');
+                throw new \Exception('Dotenv values containing spaces must be surrounded by quotes.');
             }
         }
         return array($name, trim($value));
     }
+
     /**
-     * Resolve the nested variables.
-     *
-     * Look for {$varname} patterns in the variable value and replace with an
-     * existing environment variable.
-     *
-     * @param string $value
-     *
+     * @param $value
      * @return mixed
      */
     protected function resolveNestedVariables($value)
@@ -184,12 +162,10 @@ final class DotEnvLoader
         }
         return $value;
     }
+
     /**
-     * Strips quotes and the optional leading "export " from the environment variable name.
-     *
-     * @param string $name
-     * @param string $value
-     *
+     * @param $name
+     * @param $value
      * @return array
      */
     protected function sanitiseVariableName($name, $value)
@@ -197,23 +173,19 @@ final class DotEnvLoader
         $name = trim(str_replace(array('export ', '\'', '"'), '', $name));
         return array($name, $value);
     }
+
     /**
-     * Determine if the given string begins with a quote.
-     *
-     * @param string $value
-     *
+     * @param $value
      * @return bool
      */
     protected function beginsWithAQuote($value)
     {
         return isset($value[0]) && ($value[0] === '"' || $value[0] === '\'');
     }
+
     /**
-     * Search the different places for environment variables and return first value found.
-     *
-     * @param string $name
-     *
-     * @return string|null
+     * @param $name
+     * @return array|false|null|string
      */
     public function getEnvironmentVariable($name)
     {
@@ -224,34 +196,22 @@ final class DotEnvLoader
                 return $_SERVER[$name];
             default:
                 $value = getenv($name);
-                return $value === false ? null : $value; // switch getenv default to null
+                return $value === false ? null : $value;
         }
     }
+
     /**
-     * Set an environment variable.
-     *
-     * This is done using:
-     * - putenv,
-     * - $_ENV,
-     * - $_SERVER.
-     *
-     * The environment variable value is stripped of single and double quotes.
-     *
-     * @param string      $name
-     * @param string|null $value
-     *
-     * @return void
+     * @param $name
+     * @param null $value
      */
     public function setEnvironmentVariable($name, $value = null)
     {
         list($name, $value) = $this->normaliseEnvironmentVariable($name, $value);
-        // Don't overwrite existing environment variables if we're immutable
-        // Ruby's dotenv does this with `ENV[key] ||= value`.
+
         if ($this->immutable && $this->getEnvironmentVariable($name) !== null) {
             return;
         }
-        // If PHP is running as an Apache module and an existing
-        // Apache environment variable exists, overwrite it
+
         if (function_exists('apache_getenv') && function_exists('apache_setenv') && apache_getenv($name)) {
             apache_setenv($name, $value);
         }
@@ -261,25 +221,12 @@ final class DotEnvLoader
         $_ENV[$name] = $value;
         $_SERVER[$name] = $value;
     }
+
     /**
-     * Clear an environment variable.
-     *
-     * This is not (currently) used by Dotenv but is provided as a utility
-     * method for 3rd party code.
-     *
-     * This is done using:
-     * - putenv,
-     * - unset($_ENV, $_SERVER).
-     *
-     * @param string $name
-     *
-     * @see setEnvironmentVariable()
-     *
-     * @return void
+     * @param $name
      */
     public function clearEnvironmentVariable($name)
     {
-        // Don't clear anything if we're immutable.
         if ($this->immutable) {
             return;
         }

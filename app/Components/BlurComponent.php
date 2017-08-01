@@ -33,7 +33,7 @@ class BlurComponent extends BaseComponent
         if((bool)$result) {
             return true;
         }else {
-            return false;
+            return $imageBlurFile . ' ' . $imageFile . ' ' . $newName . ' ' . $blurPower;
         }
     }
 }

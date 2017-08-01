@@ -33,9 +33,13 @@ class photoController extends BaseGuestController
 
         $newBlurFileDest = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR .uniqid() . $file->extension(true);
 
+        $blurTimeStart = time();
+        $blurLog = BlurComponent::blur($file->path, $newBlurFileDest, 500);
+        $blurTimEnd = time();
         return [
             'status' => true,
-            'blur' => BlurComponent::blur($file->path, $newBlurFileDest, 500),
+            'blur' => $blurLog,
+            'blur_runtime' => ($blurTimEnd - $blurTimeStart) . ' sec',
             'extension' => $file->extension(),
         ];
     }

@@ -4,7 +4,7 @@ namespace app;
 
 use app\Common\Request;
 use Config;
-use Db;
+use app\Base\Db;
 
 include_once $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Common' . DIRECTORY_SEPARATOR . 'autoloader.php';
 

@@ -1,5 +1,7 @@
 <?php
 
+namespace app\Base;
+
 class Db
 {
 

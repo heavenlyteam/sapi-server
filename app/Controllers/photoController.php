@@ -33,10 +33,9 @@ class photoController extends BaseGuestController
 
         $newBlurFileDest = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR .uniqid() . $file->extension(true);
 
-        BlurComponent::blur($file->path, $newBlurFileDest, 500);
-
         return [
             'status' => true,
+            'blur' => BlurComponent::blur($file->path, $newBlurFileDest, 500),
             'extension' => $file->extension(),
         ];
     }

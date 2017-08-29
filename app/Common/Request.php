@@ -2,7 +2,8 @@
 
 namespace app\Common;
 
-class Request {
+class Request
+{
 
     private $params;
 
@@ -13,7 +14,7 @@ class Request {
 
     public function get($name)
     {
-        if($this->params->get->$name === null) {
+        if ($this->params->get->$name === null) {
             return false;
         } else {
             return $this->params->get->$name;
@@ -22,18 +23,20 @@ class Request {
 
     public function post($name)
     {
-        if($this->params->post->$name === null) {
+        if (array_key_exists($name, $this->params['post'])) {
+            return $this->params['post'][$name];
+        }else {
             return false;
-        } else {
-            return $this->params->post->$name;
         }
     }
 
-    public function files() {
+    public function files()
+    {
 
     }
 
-    private function requestProcessing() {
+    private function requestProcessing()
+    {
 
         $postArray = [];
         $getArray = [];
@@ -45,25 +48,28 @@ class Request {
             $getArray[$key] = $value;
         }
 
-        $request['post'] = (object)$postArray;
-        $request['get'] = (object) $getArray;
+        $request['post'] = $postArray;
+        $request['get'] = $getArray;
         $request['type'] = strtolower($_SERVER['REQUEST_METHOD']);
         $request['isPost'] = ($request['type'] === 'post');
         $request['isGet'] = ($request['type'] === 'get');
 
-        $this->params = (object) $request;
+        $this->params = $request;
     }
 
-    public function isPost() {
-        return $this->params->isPost;
+    public function isPost()
+    {
+        return $this->params['isPost'];
     }
 
-    public function isGet() {
-        return $this->params->isGet;
+    public function isGet()
+    {
+        return $this->params['isGet'];
     }
 
-    public function type() {
-        return $this->params->type;
+    public function type()
+    {
+        return $this->params['type'];
     }
 
 }

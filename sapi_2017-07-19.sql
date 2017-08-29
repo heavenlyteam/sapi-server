@@ -20,6 +20,13 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
+CREATE DATABASE `sapi` CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE USER 'sapi'@'%' IDENTIFIED BY 'sapi';
+GRANT ALL PRIVILEGES ON `sapi`.* TO 'sapi'@'%' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+
+USE `sapi`;
+
 # Dump of table token
 # ------------------------------------------------------------
 

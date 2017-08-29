@@ -2,6 +2,7 @@
 
 namespace app\Controllers;
 
+use app\Base\BaseGuestController;
 use app\Models\User;
 
 class indexController extends BaseGuestController

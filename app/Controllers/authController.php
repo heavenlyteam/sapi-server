@@ -2,6 +2,8 @@
 
 namespace app\Controllers;
 
+use app\Base\BaseGuestController;
+
 class authController extends BaseGuestController {
 
     public function actionLogin()

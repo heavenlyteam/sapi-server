@@ -3,7 +3,7 @@
 namespace app\Controllers;
 
 
-use BaseUserController;
+use app\Base\BaseUserController;
 
 class profileController extends BaseUserController {
 

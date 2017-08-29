@@ -1,6 +1,7 @@
 <?php
 
 use app\App;
+use app\Base\RouteException;
 
 
 require_once './app/Common/DotEnvLoader.php';
@@ -29,6 +30,14 @@ $action = null;
 try {
     $controller = $_GET['controller'];
     $action = $_GET['action'];
+
+    if($controller === '/') {
+        $controller = 'index';
+    }
+    if($action === '') {
+        $action = 'Index';
+    }
+
 } catch(Exception $ex) {
     echo json_encode([
         'status' => false,
@@ -54,9 +63,6 @@ try {
     }else {
         echo $response;
     }
-} catch (Exception $ex) {
-    echo json_encode([
-        'status' => false,
-        'err' => $ex->getTraceAsString(),
-    ]);
+} catch (RouteException $ex) {
+    $ex->showNotFound();
 }

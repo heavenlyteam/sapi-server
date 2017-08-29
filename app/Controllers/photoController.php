@@ -1,14 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: vladislav
- * Date: 8/1/17
- * Time: 20:20
- */
 
 namespace app\Controllers;
 
 
+use app\Base\BaseGuestController;
 use app\Components\BlurComponent;
 use app\Lib\File;
 

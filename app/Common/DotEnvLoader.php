@@ -7,6 +7,11 @@ final class DotEnvLoader
 {
     protected $immutable;
 
+    /**
+     * DotEnvLoader constructor.
+     * @param bool $immutable
+     * @throws \Exception
+     */
     public function __construct($immutable = false)
     {
         $this->immutable = $immutable;
@@ -19,7 +24,8 @@ final class DotEnvLoader
         return true;
     }
 
-    protected function readLineFromEnv() {
+    protected function readLineFromEnv()
+    {
         $autodetect = ini_get('auto_detect_line_endings');
         ini_set('auto_detect_line_endings', '1');
         $lines = file($_SERVER['DOCUMENT_ROOT'] . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -27,6 +33,12 @@ final class DotEnvLoader
         return $lines;
     }
 
+    /**
+     * @param $name
+     * @param $value
+     * @return array
+     * @throws \Exception
+     */
     protected function normaliseEnvironmentVariable($name, $value)
     {
         list($name, $value) = $this->splitCompoundStringIntoParts($name, $value);
@@ -40,6 +52,7 @@ final class DotEnvLoader
      * @param $name
      * @param $value
      * @return array
+     * @throws \Exception
      */
     public function processFilters($name, $value)
     {
@@ -203,6 +216,7 @@ final class DotEnvLoader
     /**
      * @param $name
      * @param null $value
+     * @throws \Exception
      */
     public function setEnvironmentVariable($name, $value = null)
     {

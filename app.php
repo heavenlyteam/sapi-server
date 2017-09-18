@@ -8,11 +8,11 @@ require_once './app/Common/DotEnvLoader.php';
 
 new \app\Common\DotEnvLoader();
 
-if(getenv('DEBUG_MODE') === "PROD") {
+if (getenv('DEBUG_MODE') === "PROD") {
     ini_set('display_errors', 0);
     ini_set('display_startup_errors', 0);
     error_reporting(E_ERROR);
-}else {
+} else {
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
@@ -31,36 +31,36 @@ try {
     $controller = $_GET['controller'];
     $action = $_GET['action'];
 
-    if($controller === '/') {
+    if ($controller === '/') {
         $controller = 'index';
     }
-    if($action === '') {
+    if ($action === '') {
         $action = 'Index';
     }
 
-} catch(Exception $ex) {
+} catch (Exception $ex) {
     echo json_encode([
         'status' => false,
         'ex' => $ex->getMessage()
     ]);
 }
 
-if($controller === null || $action === null) {
+if ($controller === null || $action === null) {
     echo json_encode([
         'status' => false,
     ]);
 } else {
-    $controller = trim('app\Controllers\ ') . strtolower($controller).'Controller';
-    $action = 'action'.$action;
+    $controller = trim('app\Controllers\ ') . strtolower($controller) . 'Controller';
+    $action = 'action' . $action;
 }
 
 $currentControllerObject = new $controller($app);
 
 try {
     $response = $currentControllerObject->$action();
-    if($response) {
+    if ($response) {
         echo json_encode($response);
-    }else {
+    } else {
         echo $response;
     }
 } catch (RouteException $ex) {

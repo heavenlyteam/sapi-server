@@ -4,11 +4,12 @@ namespace app\Controllers;
 
 use app\Base\BaseGuestController;
 
-class authController extends BaseGuestController {
+class authController extends BaseGuestController
+{
 
     public function actionLogin()
     {
-        if(!$this->request->post('login') || !$this->request->post('password')) {
+        if (!$this->request->post('login') || !$this->request->post('password')) {
             return [
                 'status' => false,
                 'description' => 'miss required params',
@@ -21,7 +22,7 @@ class authController extends BaseGuestController {
             ->where('login', '=', $this->request->post('login'))
             ->where('password', '=', $passwordHash)->exec()->one();
 
-        if(!$User) {
+        if (!$User) {
             return [
                 'status' => false,
             ];
@@ -32,29 +33,30 @@ class authController extends BaseGuestController {
             'token' => $tokenHash
         ])->exec()->all();
 
-        if($accessToken) {
+        if ($accessToken) {
             $accessTokenRecord = $this->app->store->select(['token'])->from('token')
                 ->where('token', '=', $tokenHash)->exec()->one();
             return [
                 'status' => true,
                 'token' => $accessTokenRecord->token,
             ];
-        }else {
+        } else {
             return [
                 'status' => false,
             ];
         }
     }
 
-    public function actionJoin() {
-        if(!$this->request->isPost()) {
+    public function actionJoin()
+    {
+        if (!$this->request->isPost()) {
             return [
                 'status' => false,
                 'desc' => 'request not post'
             ];
         }
 
-        if(!$this->request->post('login') || !$this->request->post('password')) {
+        if (!$this->request->post('login') || !$this->request->post('password')) {
             return [
                 'status' => false,
                 'description' => 'miss required params',
@@ -67,16 +69,16 @@ class authController extends BaseGuestController {
             ->where('login', '=', $this->request->post('login'))
             ->where('password', '=', $passwordHash)->exec()->one();
 
-        if(empty((array)$User)) {
+        if (empty((array)$User)) {
             $User = $this->app->store->insert('user', [
                 'login' => $this->request->post('login'),
                 'password' => md5($this->app->config->hashSalt() . $this->request->post('password')),
             ])->exec()->one();
         }
-        if(!$User) {
+        if (!$User) {
             $this->actionLogin();
             return false;
-        }else {
+        } else {
             return [
                 'desc' => 'user not created',
                 'status' => false,

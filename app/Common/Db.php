@@ -17,6 +17,8 @@ class Db
     private $query = null;
     private $dbResponse = null;
     private $actionName = null;
+    private $limit = null;
+    private $offset = null;
 
     public function __construct(array $dbConfig)
     {
@@ -33,16 +35,17 @@ class Db
         return $this;
     }
 
-    public function insert(string $to, array $values) {
+    public function insert(string $to, array $values)
+    {
         $this->actionName = 'insert';
         $this->action = 'INSERT' . ' INTO `' . $to . '` (';
         $iteratorCounter = 0;
         foreach ($values as $value => $key) {
             $iteratorCounter++;
-            $this->action .= ' `' .$value . '`';
-            if($iteratorCounter === count($values)) {
+            $this->action .= ' `' . $value . '`';
+            if ($iteratorCounter === count($values)) {
                 $this->action .= ' ) ';
-            }else {
+            } else {
                 $this->action .= ', ';
             }
         }
@@ -51,10 +54,10 @@ class Db
         $iteratorCounter = 0;
         foreach ($values as $value => $key) {
             $iteratorCounter++;
-            $this->action .= ' "' .$key . '"';
-            if($iteratorCounter === count($values)) {
+            $this->action .= ' "' . $key . '"';
+            if ($iteratorCounter === count($values)) {
                 $this->action .= ' ) ';
-            }else {
+            } else {
                 $this->action .= ', ';
             }
         }
@@ -81,7 +84,8 @@ class Db
         return $this;
     }
 
-    public function clear() {
+    public function clear()
+    {
         $this->action = null;
         $this->valuesToSelect = [];
         $this->valuesToInsert = [];
@@ -99,18 +103,23 @@ class Db
     public function one()
     {
         $data = mysqli_fetch_all($this->dbResponse, MYSQLI_ASSOC);
-        if(count($data) > 0) {
+        if (count($data) > 0) {
             return (object)$data[0];
-        }else {
+        } else {
             return (object)[];
         }
     }
 
+    /**
+     * Build query, which will be execute in mysql
+     *
+     * @return string
+     */
     private function buildQuery()
     {
         $qs = $this->action;
 
-        if($this->actionName === 'insert') {
+        if ($this->actionName === 'insert') {
             $this->query = $qs;
             return $qs;
         }
@@ -138,11 +147,20 @@ class Db
             $qs .= $condition;
             $iterator++;
         }
+
+        if (is_numeric($this->limit)) {
+            $qs .= ' LIMIT ' . $this->limit;
+        }
+        if (is_numeric($this->offset)) {
+            $qs .= ' OFFSET ' . $this->offset;
+        }
+
         $this->query = $qs;
         return $qs;
     }
 
-    public function delete(string $table) {
+    public function delete(string $table)
+    {
         $this->actionName = 'delete';
         $this->action = 'DELETE ' . 'FROM `' . $table . '`';
         return $this;
@@ -151,6 +169,34 @@ class Db
     public function getQuery()
     {
         return $this->buildQuery();
+    }
+
+    /**
+     * Add limit params to query
+     *
+     * @param int $limit
+     * @return $this
+     */
+    public function limit(int $limit)
+    {
+        if (is_numeric($limit)) {
+            $this->limit = $limit;
+        }
+        return $this;
+    }
+
+    /**
+     * Add offset params to query
+     *
+     * @param int $offset
+     * @return $this
+     */
+    public function offset(int $offset)
+    {
+        if (is_numeric($offset)) {
+            $this->limit = $offset;
+        }
+        return $this;
     }
 
 }
